@@ -578,7 +578,7 @@ describe('Transaction', function() {
     it('serializes the `change` information', function() {
       var transaction = new Transaction();
       transaction.change(changeAddress);
-      expect(JSON.parse(transaction.toJSON()).changeScript).to.equal(Script.fromAddress(changeAddress).toString());
+      expect(transaction.toJSON().changeScript).to.equal(Script.fromAddress(changeAddress).toString());
       expect(new Transaction(transaction.toJSON()).uncheckedSerialize()).to.equal(transaction.uncheckedSerialize());
     });
     it('serializes correctly p2sh multisig signed tx', function() {
@@ -759,8 +759,17 @@ describe('Transaction', function() {
 
   it('handles unsupported utxo in tx object', function() {
     var transaction = new Transaction();
-    transaction.fromJSON.bind(transaction, unsupportedTxObj)
+    transaction.fromObject.bind(transaction, JSON.parse(unsupportedTxObj))
       .should.throw('Unsupported input script type: OP_1 OP_ADD OP_2 OP_EQUAL');
+  });
+
+  it('will error if object hash does not match transaction hash', function() {
+    var tx = new Transaction(tx_1_hex);
+    var txObj = tx.toObject();
+    txObj.hash = 'a477af6b2667c29670467e4e0728b685ee07b240235771862318e29ddbe58458';
+    (function() {
+      var tx2 = new Transaction(txObj);
+    }).should.throw('Hash in object does not match transaction hash');
   });
 
   describe('inputAmount + outputAmount', function() {
