@@ -1,15 +1,8 @@
 {
-<<<<<<< HEAD
-  "name": "digicore",
-  "version": "0.12.15",
-  "description": "A pure and powerful JavaScript DigiByte library.",
-  "author": "DigiByteDev <dev@digibyte.co>",
-=======
   "name": "bitcore",
   "version": "0.13.0",
   "description": "A pure and powerful JavaScript Bitcoin library.",
-  "author": "BitPay <dev@bitpay.com>",
->>>>>>> upstream/master
+  "author": "DigiByte",
   "main": "index.js",
   "scripts": {
     "lint": "gulp lint",
