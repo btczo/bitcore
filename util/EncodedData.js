@@ -1,4 +1,5 @@
 var base58 = require('../lib/Base58').base58Check;
+var bech32 = require('bech32');
 
 // Constructor.  Takes the following forms:
 //   new EncodedData(<base58_address_string>)
@@ -36,7 +37,9 @@ EncodedData.prototype.withEncoding = function(encoding) {
 
 // answer the data in the given encoding
 EncodedData.prototype.as = function(encoding) {
-  if (!encodings[encoding]) throw new Error('invalid encoding: '+encoding);
+  if (!encodings[encoding]) {
+    throw new Error('invalid encoding: '+encoding);
+  }
   return this.converters[encoding].call(this);
 };
 
@@ -82,7 +85,15 @@ EncodedData.prototype.doAsBinary = function(callback) {
 var encodings = {
   'binary': {
     converters: {
-      'binary': function() {
+      'binary': function() { 
+        if(this.data.words) {
+          var answer = new Buffer(this.data.words.length);
+          var version = this.data.words[0];
+          this.prefix = this.data.prefix;
+          var data = bech32.fromWords(this.data.words.slice(1))
+          this.data = answer;
+          return answer;
+        }
         var answer = new Buffer(this.data.length);
         this.data.copy(answer);
         return answer;
@@ -103,7 +114,16 @@ var encodings = {
   'base58': {
     converters: {
       'binary': function() {
-        return base58.decode(this.data);
+        var data;
+        try {
+          data = base58.decode(this.data);
+        } catch(e) {
+          try {
+            data = bech32.decode(this.data);
+          } catch(err) {
+          }
+        }
+        return data;
       },
       'hex': function() {
         return this.withEncoding('binary').as('hex');
