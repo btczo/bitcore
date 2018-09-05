@@ -30,6 +30,9 @@ VersionedData.prototype.version = function(num) {
 
 // get or set the payload data (as a Buffer object)
 VersionedData.prototype.payload = function(data) {
+  if (data.length === 2) {
+    //data = data[1];
+  }
   if (data) {
     this.doAsBinary(function() {
       data.copy(this.data, 1);

@@ -8,8 +8,10 @@ exports.livenet = {
   name: 'livenet',
   magic: hex('fac3b6da'),
   addressVersion: 0x1e,
+  P2SHVersionTwo: 0x63,
   privKeyVersion: 128,
   P2SHVersion: 5,
+  bech32Prefix: 'dgb',
   hkeyPublicVersion: 0x0488b21e,
   hkeyPrivateVersion: 0x0488ade4,
   genesisBlock: {
@@ -43,6 +45,7 @@ exports.testnet = {
   magic: hex('fdc8bddd'),
   addressVersion: 0x7e,
   privKeyVersion: 254,
+  bech32Prefix: 'dgbt',
   P2SHVersion: 140,
   hkeyPublicVersion: 0x043587cf,
   hkeyPrivateVersion: 0x04358394,

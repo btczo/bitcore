@@ -89,7 +89,7 @@ var encodings = {
         if(this.data.words) {
           var answer = new Buffer(this.data.words.length);
           var version = this.data.words[0];
-          this.prefix = this.data.prefix;
+          //this.prefix = this.data.prefix;
           var data = bech32.fromWords(this.data.words.slice(1))
           this.data = answer;
           return answer;
@@ -99,11 +99,21 @@ var encodings = {
         return answer;
       },
       'base58': function() {
+        if(this.isBech32) {
+          var words = bech32.toWords(this.data.slice(1, this.data.length));
+          words.unshift(0);
+          return bech32.encode(this.network().bech32Prefix, words);
+        }
         return base58.encode(this.data);
       },
       'hex': function() {
         return this.data.toString('hex');
       },
+      'bech32': function() {
+        var words =  bech32.toWords(this.data);
+        words.unshift(0)
+        return bech32.encode('dgbt', words);
+      }
     },
 
     _validate: function() {
@@ -128,6 +138,17 @@ var encodings = {
       'hex': function() {
         return this.withEncoding('binary').as('hex');
       },
+    },
+  },
+
+  'bech32': {
+    converters: {
+      'binary': function() {
+        return bech32.decode(this.data);
+      },
+      'hex': function() {
+        return this.withEncoding('binary').as('hex');
+      }
     },
   },
 
